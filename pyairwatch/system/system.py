@@ -35,3 +35,10 @@ class System(object):
         return self.client.put(module=module, path=path, version=version,
                                params=params, data=data,
                                json=json, header=header)
+
+    def _delete(self, module="system", path=None,
+                version=None, params=None, header=None):
+        """Delete requests"""
+        return self.client.delete(
+            module=module, path=path, version=version, params=params, header=header
+        )
