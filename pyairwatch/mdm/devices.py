@@ -18,6 +18,70 @@ class Devices(MDM):
         response = MDM._get(self, path='/devices/search', params=kwargs)
         return response
 
+    def extensive_search(
+        self,
+        organizationgroupid: int = None,
+        platform: str = None,
+        startdatetime: str = None,
+        enddatetime: str = None,
+        deviceid: int = None,
+        customattributeslist: str = None,
+        enrollmentstatus: str = None,
+        statuschangestarttime: str = None,
+        statuschangeendtime: str = None,
+        page: int = 0,
+        pagesize: int = 500,
+        macaddress: str = None,
+    ):
+        """Full device details search with many attributes included.
+
+        Args:
+            organizationgroupid (int, optional): OrganizationGroup to be searched,
+                user's OG is considered if not sent. Defaults to None.
+            platform (str, optional): Device platform. Defaults to None.
+            startdatetime (str, optional): Filters devices such that devices with
+                last seen after this date will be returned. Defaults to None.
+            enddatetime (str, optional): Filters devices such that devices with
+                last seen till this date will be returned. Defaults to None.
+            deviceid (int, optional): Device Identifier. Defaults to None.
+            customattributeslist (str, optional): Custom attribute names.
+                Defaults to None.
+            enrollmentstatus (str, optional): Filters devices based on EnrollmentStatus
+                [Enrolled, EnterpriseWipePending, DeviceWipePending, Unenrolled].
+                Defaults to None.
+            statuschangestarttime (str, optional): Filters the devices for which
+                EnrollmentStatus has changes from enrollmentstatuschangefrom datetime.
+                This filter is only for Enrolled and Unenrolled enrollment status.
+                Defaults to None.
+            statuschangeendtime (str, optional): Filters the devices for which
+                EnrollmentStatus has changes till enrollmentstatuschangeto datetime.
+                This filter is only for Enrolled and Unenrolled enrollment status.
+                Defaults to None.
+            page (int, optional): Specific page number to get. 0 based index.
+                Defaults to 0.
+            pagesize (int, optional): Maximumm records per page. Defaults to 500.
+            macaddress (str, optional): MAC address. Defaults to None.
+
+        Returns:
+            dict: API paged of devices that meet the search requirements.
+        """
+        params = {
+            "organizationgroupid": organizationgroupid,
+            "platform": platform,
+            "startdatetime": startdatetime,
+            "enddatetime": enddatetime,
+            "deviceid": deviceid,
+            "customattributeslist": customattributeslist,
+            "enrollmentstatus": enrollmentstatus,
+            "statuschangestarttime": statuschangestarttime,
+            "statuschangeendtime": statuschangeendtime,
+            "page": page,
+            "pagesize": pagesize,
+            "macaddress": macaddress,
+        }
+        response = MDM._get(self, path='/devices/extensivesearch', params=params)
+        return response
+
     def get_details_by_alt_id(self, serialnumber=None, macaddress=None,
                               udid=None, imeinumber=None, easid=None):
         """Returns the Device information matching the search parameters."""
