@@ -18,24 +18,10 @@ class Devices(MDM):
         response = MDM._get(self, path='/devices/search', params=kwargs)
         return response
 
-    def extensive_search(
-        self,
-        organizationgroupid: int = None,
-        platform: str = None,
-        startdatetime: str = None,
-        enddatetime: str = None,
-        deviceid: int = None,
-        customattributeslist: str = None,
-        enrollmentstatus: str = None,
-        statuschangestarttime: str = None,
-        statuschangeendtime: str = None,
-        page: int = 0,
-        pagesize: int = 500,
-        macaddress: str = None,
-    ):
+    def extensive_search(self, **kwargs):
         """Full device details search with many attributes included.
 
-        Args:
+        PARAMS:
             organizationgroupid (int, optional): OrganizationGroup to be searched,
                 user's OG is considered if not sent. Defaults to None.
             platform (str, optional): Device platform. Defaults to None.
@@ -65,21 +51,7 @@ class Devices(MDM):
         Returns:
             dict: API paged of devices that meet the search requirements.
         """
-        params = {
-            "organizationgroupid": organizationgroupid,
-            "platform": platform,
-            "startdatetime": startdatetime,
-            "enddatetime": enddatetime,
-            "deviceid": deviceid,
-            "customattributeslist": customattributeslist,
-            "enrollmentstatus": enrollmentstatus,
-            "statuschangestarttime": statuschangestarttime,
-            "statuschangeendtime": statuschangeendtime,
-            "page": page,
-            "pagesize": pagesize,
-            "macaddress": macaddress,
-        }
-        response = MDM._get(self, path='/devices/extensivesearch', params=params)
+        response = MDM._get(self, path='/devices/extensivesearch', params=kwargs)
         return response
 
     def get_details_by_alt_id(self, serialnumber=None, macaddress=None,
