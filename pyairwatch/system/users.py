@@ -105,7 +105,7 @@ class Users(System):
         _header = {'Accept': 'application/json;version=2'}
         return System._put(self, path=_path, header=_header, json=kwargs)
 
-    def delete_user_by_id(self, user_id):
+    def delete_user_by_uuid(self, uuid):
         """
         Delete the enrollment user by enrollment user uuid with the v2 endpoint.
 
