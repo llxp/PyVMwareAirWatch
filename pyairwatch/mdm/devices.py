@@ -13,6 +13,11 @@ class Devices(MDM):
         """Returns the Device information matching the search parameters."""
         return MDM._get(self, path='/devices', params=kwargs)
 
+    def searchv2(self, **kwargs):
+        """Returns the Device information matching the search parameters with v2 endpoint."""
+        _header = {'Accept': 'application/json;version=2'}
+        return MDM._get(self, path='/devices/search', header=_header, params=kwargs)
+
     def search_all(self, **kwargs):
         """Returns the Devices matching the search parameters."""
         response = MDM._get(self, path='/devices/search', params=kwargs)
