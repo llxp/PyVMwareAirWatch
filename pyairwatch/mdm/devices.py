@@ -22,7 +22,8 @@ class Devices(MDM):
                               udid=None, imeinumber=None, easid=None):
         """Returns the Device information matching the search parameters."""
         if serialnumber:
-            response = self.search(searchby='Serialnumber', id=str(serialnumber))
+            response = self.search(
+                searchby='Serialnumber', id=str(serialnumber))
         elif macaddress:
             response = self.search(searchby='Macaddress', id=str(macaddress))
         elif udid:
@@ -37,7 +38,8 @@ class Devices(MDM):
 
     def get_id_by_alt_id(self, serialnumber=None, macaddress=None, udid=None,
                          imeinumber=None, easid=None):
-        response = self.get_details_by_alt_id(serialnumber, macaddress, udid, imeinumber, easid)
+        response = self.get_details_by_alt_id(
+            serialnumber, macaddress, udid, imeinumber, easid)
         return response['Id']['Value']
 
     def clear_device_passcode(self, device_id):
@@ -119,7 +121,8 @@ class Devices(MDM):
         Get information of the administrator account configured on a macOS
         device via device enrollment program (DEP).
         """
-        _path = "/devices/{}/security/managed-admin-information".format(device_id)
+        _path = "/devices/{}/security/managed-admin-information".format(
+            device_id)
         return MDM._get(self, path=_path)
 
     def delete_device_by_id(self, device_id):
