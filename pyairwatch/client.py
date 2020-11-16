@@ -15,6 +15,7 @@ from pyairwatch.system.usergroups import UserGroups
 from pyairwatch.system.users import Users
 from pyairwatch.system.featureflag import FeatureFlag
 from pyairwatch.system.info import Info
+from pyairwatch.system.tags import Tags
 
 
 # Enabling debugging at http.client level (requests->urllib3->http.client)
@@ -55,6 +56,7 @@ class AirWatchAPI(object):
         self.ldap = LDAP(self)
         self.info = Info(self)
         self.network = Network(self)
+        self.tags = Tags(self)
 
     def get(self, module, path, version=None, params=None, header=None,
             timeout=30):
