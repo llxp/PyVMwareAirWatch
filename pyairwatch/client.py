@@ -3,6 +3,7 @@ import base64
 import logging
 import requests
 from pyairwatch.error import AirWatchAPIError
+from pyairwatch.mam.apps import Apps
 from pyairwatch.mdm.devices import Devices
 from pyairwatch.mdm.profiles import Profiles
 from pyairwatch.mdm.smartgroups import SmartGroups
@@ -57,6 +58,7 @@ class AirWatchAPI(object):
         self.info = Info(self)
         self.network = Network(self)
         self.tags = Tags(self)
+        self.apps = Apps(self)
 
     def get(self, module, path, version=None, params=None, header=None,
             timeout=30):
