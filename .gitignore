@@ -4,5 +4,5 @@
 venv
 enviroments.json
 environments.json
-
+.env
 .venv
