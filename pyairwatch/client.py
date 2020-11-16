@@ -3,6 +3,7 @@ import base64
 import logging
 import requests
 from pyairwatch.error import AirWatchAPIError
+from pyairwatch.mam.apps import Apps
 from pyairwatch.mdm.devices import Devices
 from pyairwatch.mdm.profiles import Profiles
 from pyairwatch.mdm.smartgroups import SmartGroups
@@ -15,6 +16,7 @@ from pyairwatch.system.usergroups import UserGroups
 from pyairwatch.system.users import Users
 from pyairwatch.system.featureflag import FeatureFlag
 from pyairwatch.system.info import Info
+from pyairwatch.system.tags import Tags
 
 
 # Enabling debugging at http.client level (requests->urllib3->http.client)
@@ -55,6 +57,8 @@ class AirWatchAPI(object):
         self.ldap = LDAP(self)
         self.info = Info(self)
         self.network = Network(self)
+        self.tags = Tags(self)
+        self.apps = Apps(self)
 
     def get(self, module, path, version=None, params=None, header=None,
             timeout=30):
