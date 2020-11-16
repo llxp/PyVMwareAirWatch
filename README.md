@@ -4,7 +4,8 @@ PyVMwareAirWatch
 PyVMwareAirWatch is a Python API library for [VMware AirWatch](https://www.air-watch.com/) 9.1+ (now named Workspace ONE UEM)
 
 Usage:
-```
+
+```python
 from pyairwatch.client import AirWatchAPI
 
 a = AirWatchAPI(env='your_environment_url',
@@ -27,7 +28,9 @@ a.devices.get_id_by_alt_id(serialnumber='C09Z1TC8FJWT')
 ```
 
 Supported Functionality
+
 ---
+
 * Devices
   * Get Device Details by Alt ID (Macaddress, Udid, Serialnumber, ImeiNumber, EasId)
   * Get Device ID by Alt ID (Macaddress, Udid, Serialnumber, ImeiNumber, EasId)
@@ -72,5 +75,7 @@ Supported Functionality
   * Get Environment Information
 
 Requirements
+
 ---
+
 * [requests](http://docs.python-requests.org/en/latest/)
