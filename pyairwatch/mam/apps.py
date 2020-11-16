@@ -12,6 +12,8 @@ class Apps(MAM):
         """
         Returns the application or book determined by the given filters.py
 
+        /api/mam/apps/search?{params}
+
         PARAMS:
             type={type}
             applicationtype={applicationtype}
@@ -35,3 +37,14 @@ class Apps(MAM):
         """
         response = MAM._get(self, path='/apps/search', params=kwargs)
         return response
+
+    def get_id(self, appName):
+        response = MAM._get(self, path='/apps/search', params=appName)
+        return response['Application'][0]['SupportedModels']['Model'][0]['ApplicationId']
+
+    def search_details(self, appId):
+        """
+        Returns details of an App searched by the ApplicationID
+        """
+
+        response = MAM._get(self, path='/apps/internal/{appId}')
