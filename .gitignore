@@ -4,3 +4,5 @@
 venv
 enviroments.json
 environments.json
+
+.venv
