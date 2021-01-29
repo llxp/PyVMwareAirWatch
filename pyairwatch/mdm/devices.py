@@ -165,7 +165,39 @@ class Devices(MDM):
 
     def delete_device_by_id(self, device_id):
         """
-        :param device_id:
+        Delete a device from management.
+
+        :param device_id: The device ID
         :return: API response
         """
         return MDM._delete(self, path='/devices/{}'.format(device_id))
+
+    def delete_customattribute_by_id(self, device_id, customAttributes):
+        """
+        Delete a device customattribute.
+
+        :param device_id: The device ID
+               customAttributes: The attributes to remove separated by a comma
+        :return: API response
+        """
+        _path = "/devices/{}/customattributes".format(device_id)
+        _data = {"CustomAttributes": []}
+        for item in customAttributes.split(","):
+            _data["CustomAttributes"].append({"Name": item})
+        return MDM._delete(self, path=_path, json=_data)
+
+    def delete_customattribute_by_alt_id(self, serialnumber, customAttributes):
+        """
+        Delete a device customattribute by it's serial number.
+
+        # NOTE: (clayton) This function doesn't seem to work from testing?
+
+        :param device_id: The device ID
+               customAttributes: The attributes to remove separated by a comma
+        :return: API response
+        """
+        _path = "/devices/serialnumber/{}/customattributes".format(serialnumber)
+        _data = {"CustomAttributes": []}
+        for item in customAttributes.split(","):
+            _data["CustomAttributes"].append({"Name": item})
+        return MDM._delete(self, path=_path, json=_data)
