@@ -131,8 +131,8 @@ class AirWatchAPI(object):
 
     # NOQA
 
-    def delete(self, module, path, version=None, params=None, header=None,
-               timeout=30):
+    def delete(self, module, path, version=None, params=None, data=None,
+               json=None, header=None, timeout=30):
         """
         Sends a DELETE request to the API. Returns the response object.
         """
@@ -142,8 +142,8 @@ class AirWatchAPI(object):
                                          self.apikey, header))
         endpoint = self._build_endpoint(self.env, module, path, version)
         try:
-            r = requests.delete(endpoint, params=params, headers=header,
-                                timeout=timeout)
+            r = requests.delete(endpoint, params=params, data=data, json=json,
+                                headers=header, timeout=timeout)
             r = self._check_for_error(r)
             return r
         except AirWatchAPIError as e:
