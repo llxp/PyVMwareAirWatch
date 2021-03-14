@@ -7,7 +7,7 @@ from pyairwatch.mam.apps import Apps
 from pyairwatch.mdm.devices import Devices
 from pyairwatch.mdm.profiles import Profiles
 from pyairwatch.mdm.smartgroups import SmartGroups
-from pyairwatch.mdm.tags import Tags
+from pyairwatch.mdm.deviceTags import DeviceTags
 from pyairwatch.mdm.ldap import LDAP
 from pyairwatch.mdm.network import Network
 from pyairwatch.system.admins import Admins
@@ -31,9 +31,11 @@ except ImportError:
     from httplib import HTTPConnection
 HTTPConnection.debuglevel = 0
 
-#todo: programing using library should be able to set logging level
-#todo: Implement logging to using config https://docs.python.org/3/howto/logging.html#configuring-logging
-#todo: set logging correclty for a library https://docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# todo: programing using library should be able to set logging level
+# todo: Implement logging to using config:
+#   https://docs.python.org/3/howto/logging.html#configuring-logging
+# todo: set logging correclty for a library:
+#   https://docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
 requests_log = logging.getLogger("requests.packages.urllib3")
@@ -51,7 +53,7 @@ class AirWatchAPI(object):
         self.smartgroups = SmartGroups(self)
         self.devices = Devices(self)
         self.profiles = Profiles(self)
-        self.tags = Tags(self)
+        self.deviceTags = DeviceTags(self)
         self.admins = Admins(self)
         self.users = Users(self)
         self.usergroups = UserGroups(self)
