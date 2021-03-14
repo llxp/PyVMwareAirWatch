@@ -1,7 +1,7 @@
 from .mdm import MDM
 
 
-class Tags(MDM):
+class DeviceTags(MDM):
     """A class to manage various AirWatch device tag functionalities"""
 
     def __init__(self, client):
