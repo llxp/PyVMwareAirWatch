@@ -10,7 +10,7 @@ load_dotenv()
 MY_API_KEY = os.getenv('MY_API_KEY')
 MY_USER = os.getenv('MY_USER')
 MY_PASS = os.getenv('MY_PASS')
-AW_API_URL= os.getenv('AW_API_URL')
+AW_API_URL = os.getenv('AW_API_URL')
 
 # Build the AirWatch API Client
 a = AirWatchAPI(env=f'{AW_API_URL}',
