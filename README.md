@@ -44,6 +44,7 @@ Supported Functionality
 * Users
   * Search for users by Username, Firstname, Lastname, Email,
   OrganizationGroupID, or Role
+  * Delete user
 * Groups
   * Get OG ID from Group ID
   * Create Customer type OG (On-Prem only)

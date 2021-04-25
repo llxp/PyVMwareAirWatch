@@ -13,9 +13,50 @@ class Devices(MDM):
         """Returns the Device information matching the search parameters."""
         return MDM._get(self, path='/devices', params=kwargs)
 
+    def searchv2(self, **kwargs):
+        """Returns the Device information matching the search parameters with v2 endpoint."""
+        _header = {'Accept': 'application/json;version=2'}
+        return MDM._get(self, path='/devices/search', header=_header, params=kwargs)
+
     def search_all(self, **kwargs):
         """Returns the Devices matching the search parameters."""
         response = MDM._get(self, path='/devices/search', params=kwargs)
+        return response
+
+    def extensive_search(self, **kwargs):
+        """Full device details search with many attributes included.
+
+        PARAMS:
+            organizationgroupid (int, optional): OrganizationGroup to be searched,
+                user's OG is considered if not sent. Defaults to None.
+            platform (str, optional): Device platform. Defaults to None.
+            startdatetime (str, optional): Filters devices such that devices with
+                last seen after this date will be returned. Defaults to None.
+            enddatetime (str, optional): Filters devices such that devices with
+                last seen till this date will be returned. Defaults to None.
+            deviceid (int, optional): Device Identifier. Defaults to None.
+            customattributeslist (str, optional): Custom attribute names.
+                Defaults to None.
+            enrollmentstatus (str, optional): Filters devices based on EnrollmentStatus
+                [Enrolled, EnterpriseWipePending, DeviceWipePending, Unenrolled].
+                Defaults to None.
+            statuschangestarttime (str, optional): Filters the devices for which
+                EnrollmentStatus has changes from enrollmentstatuschangefrom datetime.
+                This filter is only for Enrolled and Unenrolled enrollment status.
+                Defaults to None.
+            statuschangeendtime (str, optional): Filters the devices for which
+                EnrollmentStatus has changes till enrollmentstatuschangeto datetime.
+                This filter is only for Enrolled and Unenrolled enrollment status.
+                Defaults to None.
+            page (int, optional): Specific page number to get. 0 based index.
+                Defaults to 0.
+            pagesize (int, optional): Maximumm records per page. Defaults to 500.
+            macaddress (str, optional): MAC address. Defaults to None.
+
+        Returns:
+            dict: API paged of devices that meet the search requirements.
+        """
+        response = MDM._get(self, path='/devices/extensivesearch', params=kwargs)
         return response
 
     def get_details_by_alt_id(self, serialnumber=None, macaddress=None,
@@ -127,7 +168,39 @@ class Devices(MDM):
 
     def delete_device_by_id(self, device_id):
         """
-        :param device_id:
+        Delete a device from management.
+
+        :param device_id: The device ID
         :return: API response
         """
         return MDM._delete(self, path='/devices/{}'.format(device_id))
+
+    def delete_customattribute_by_id(self, device_id, customAttributes):
+        """
+        Delete a device customattribute.
+
+        :param device_id: The device ID
+               customAttributes: The attributes to remove separated by a comma
+        :return: API response
+        """
+        _path = "/devices/{}/customattributes".format(device_id)
+        _data = {"CustomAttributes": []}
+        for item in customAttributes.split(","):
+            _data["CustomAttributes"].append({"Name": item})
+        return MDM._delete(self, path=_path, json=_data)
+
+    def delete_customattribute_by_alt_id(self, serialnumber, customAttributes):
+        """
+        Delete a device customattribute by it's serial number.
+
+        # NOTE: (clayton) This function doesn't seem to work from testing?
+
+        :param device_id: The device ID
+               customAttributes: The attributes to remove separated by a comma
+        :return: API response
+        """
+        _path = "/devices/serialnumber/{}/customattributes".format(serialnumber)
+        _data = {"CustomAttributes": []}
+        for item in customAttributes.split(","):
+            _data["CustomAttributes"].append({"Name": item})
+        return MDM._delete(self, path=_path, json=_data)

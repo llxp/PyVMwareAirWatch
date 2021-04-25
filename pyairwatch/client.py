@@ -2,23 +2,19 @@ from __future__ import print_function, absolute_import
 import base64
 import logging
 import requests
-from pyairwatch.error import AirWatchAPIError
-from pyairwatch.mam.apps import Apps
-from pyairwatch.mdm.devices import Devices
-from pyairwatch.mdm.profiles import Profiles
-from pyairwatch.mdm.smartgroups import SmartGroups
-from pyairwatch.mdm.tags import Tags
-from pyairwatch.mdm.ldap import LDAP
-from pyairwatch.mdm.network import Network
-from pyairwatch.system.admins import Admins
-from pyairwatch.system.groups import Groups
-from pyairwatch.system.usergroups import UserGroups
-from pyairwatch.system.users import Users
-from pyairwatch.system.featureflag import FeatureFlag
-from pyairwatch.system.info import Info
-from pyairwatch.mam.application import Application
-from pyairwatch.mam.vpp import VPP
-from pyairwatch.system.tags import Tags
+from .error import AirWatchAPIError
+from .mdm.devices import Devices
+from .mdm.profiles import Profiles
+from .mdm.smartgroups import SmartGroups
+from .mdm.tags import Tags
+from .mdm.ldap import LDAP
+from .mdm.network import Network
+from .system.admins import Admins
+from .system.groups import Groups
+from .system.usergroups import UserGroups
+from .system.users import Users
+from .system.featureflag import FeatureFlag
+from .system.info import Info
 
 
 # Enabling debugging at http.client level (requests->urllib3->http.client)
@@ -72,7 +68,7 @@ class AirWatchAPI(object):
         if header is None:
             header = {}
         header.update(self._build_header(self.username, self.password,
-                                         self.apikey))
+                                         self.apikey, header))
         header.update({'Content-Type': 'application/json'})
         endpoint = self._build_endpoint(self.env, module, path, version)
         try:
@@ -91,7 +87,7 @@ class AirWatchAPI(object):
         if header is None:
             header = {}
         header.update(self._build_header(self.username, self.password,
-                                         self.apikey))
+                                         self.apikey, header))
         endpoint = self._build_endpoint(self.env, module, path, version)
         try:
             r = requests.post(endpoint, params=params, data=data, json=json,
@@ -109,7 +105,7 @@ class AirWatchAPI(object):
         if header is None:
             header = {}
         header.update(self._build_header(self.username, self.password,
-                                         self.apikey))
+                                         self.apikey, header))
         endpoint = self._build_endpoint(self.env, module, path, version)
         try:
             r = requests.put(endpoint, params=params, data=data, json=json,
@@ -127,7 +123,7 @@ class AirWatchAPI(object):
         if header is None:
             header = {}
         header.update(self._build_header(self.username, self.password,
-                                         self.apikey))
+                                         self.apikey, header))
         endpoint = self._build_endpoint(self.env, module, path, version)
         try:
             r = requests.patch(endpoint, params=params, data=data, json=json,
@@ -137,19 +133,21 @@ class AirWatchAPI(object):
         except AirWatchAPIError as e:
             raise e
 
-    def delete(self, module, path, version=None, params=None, header=None,
-               timeout=30):
+    # NOQA
+
+    def delete(self, module, path, version=None, params=None, data=None,
+               json=None, header=None, timeout=30):
         """
         Sends a DELETE request to the API. Returns the response object.
         """
         if header is None:
             header = {}
         header.update(self._build_header(self.username, self.password,
-                                         self.apikey))
+                                         self.apikey, header))
         endpoint = self._build_endpoint(self.env, module, path, version)
         try:
-            r = requests.delete(endpoint, params=params, headers=header,
-                                timeout=timeout)
+            r = requests.delete(endpoint, params=params, data=data, json=json,
+                                headers=header, timeout=timeout)
             r = self._check_for_error(r)
             return r
         except AirWatchAPIError as e:
@@ -192,15 +190,16 @@ class AirWatchAPI(object):
         return url
 
     @staticmethod
-    def _build_header(username, password, token, accept='application/json'):
+    def _build_header(username, password, token, header=None):
         """
         Build the header with base64 login, AW API token,
         and accept a json response
         """
+        if not header:
+            header = {}
         hashed_auth = base64.b64encode((username + ':' + password).encode('utf8')).decode("utf-8")
-        header = {
-            'Authorization': 'Basic {}'.format(hashed_auth),
-            'aw-tenant-code': token,
-            'Accept': accept
-        }
+        header.update({'Authorization': 'Basic {}'.format(hashed_auth)})
+        header.update({'aw-tenant-code': token})
+        if not header.get("Accept"):
+            header.update({'Accept': 'application/json'})
         return header

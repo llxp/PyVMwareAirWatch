@@ -33,5 +33,7 @@ class MDM(object):
                                  params=params, data=data,
                                  json=json, header=header)
 
-    def _delete(self, module='MDM', path=None, version=None, params=None, header=None):
-        return self.client.delete(module=module, path=path, version=version, params=params, header=header)
+    def _delete(self, module='MDM', path=None, version=None, params=None,
+                data=None, json=None, header=None):
+        return self.client.delete(module=module, path=path, version=version,
+                                  params=params, data=data, json=json, header=header)
