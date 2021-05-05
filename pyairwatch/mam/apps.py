@@ -38,8 +38,8 @@ class Apps(MAM):
         response = MAM._get(self, path='/apps/search', params=kwargs)
         return response
 
-    def get_id(self, appName):
-        response = MAM._get(self, path='/apps/search', params=appName)
+    def get_id(self, **kwargs):
+        response = MAM._get(self, path='/apps/search', params=kwargs)
         return response['Application'][0]['SupportedModels']['Model'][0]['ApplicationId']
 
     def search_details(self, appId):
@@ -47,4 +47,12 @@ class Apps(MAM):
         Returns details of an App searched by the ApplicationID
         """
 
-        response = MAM._get(self, path='/apps/internal/{appId}')
+        response = MAM._get(self, path=f'/apps/internal/{appId}')
+
+    def check_app_installed(self, appId):
+        """
+        Returns a list of DeviceId's where an app determined by the given appId is installed
+        """
+
+        response = MAM._get(self, path=f'/apps/internal/{appId}/devices?status=installed', version=2)
+        return response['DeviceId']

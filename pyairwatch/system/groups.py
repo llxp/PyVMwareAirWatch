@@ -15,6 +15,11 @@ class Groups(System):
         """Returns the Groups matching the search parameters."""
         response = System._get(self, path='/groups/search', params=kwargs)
         return response
+    
+    def search_group_id(self, **kwargs):
+        """Returns the Group ID of the Group matching the search parameters."""
+        response = System._get(self, path='/groups/search', params=kwargs)
+        return response['LocationGroups'][0]['Id']['Value']
 
     def get_id_from_groupid(self, groupid):
         """Returns the OG ID for a given Group ID"""
