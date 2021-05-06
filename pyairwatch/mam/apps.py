@@ -5,6 +5,7 @@ class Apps(MAM):
     """
     A class to manage REST API v1 Apps
     """
+
     def __init__(self, client):
         MAM.__init__(self, client)
 
@@ -48,11 +49,13 @@ class Apps(MAM):
         """
 
         response = MAM._get(self, path=f'/apps/internal/{appId}')
+        return response
 
     def check_app_installed(self, appId):
         """
         Returns a list of DeviceId's where an app determined by the given appId is installed
         """
 
-        response = MAM._get(self, path=f'/apps/internal/{appId}/devices?status=installed', version=2)
+        response = MAM._get(
+            self, path=f'/apps/internal/{appId}/devices?status=installed')
         return response['DeviceId']
