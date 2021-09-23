@@ -11,13 +11,10 @@ using the WorkspaceOneAPIError Class.
 from __future__ import print_function, absolute_import
 import base64
 import logging
+from typing import Any, Dict, Union
 import requests
+from requests.models import Response
 from .error import WorkspaceOneAPIError
-from .mdm.devices import Devices
-from .system.groups import Groups
-from .system.users import Users
-from .system.info import Info
-from .mdm.tags import Tags
 
 
 # Enabling debugging at http.client level (requests->urllib3->http.client)
@@ -40,7 +37,7 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 
 
-class WorkspaceOneAPI(object):
+class Client(object):
     """
     Class for building a WorkspaceONE UEM API Object
     """
@@ -58,15 +55,19 @@ class WorkspaceOneAPI(object):
         self.apikey = apikey
         self.username = username
         self.password = password
-        self.groups = Groups(self)
-        self.devices = Devices(self)
-        self.users = Users(self)
-        self.info = Info(self)
-        self.tags = Tags(self)
 
-    def get(self, module, path, version=None, params=None, header=None, timeout=30):
+    def get(
+        self,
+        module: str,
+        path: str,
+        version: str = None,
+        params: dict = None,
+        header: dict = None,
+        timeout: int = 30
+    ) -> Response:
         """
-        Sends a GET request to the API. Returns the response object.
+        Sends a GET request to the API.
+        Returns the response object.
         """
         if header is None:
             header = {}
@@ -76,6 +77,7 @@ class WorkspaceOneAPI(object):
         )
         header.update({"Content-Type": "application/json"})
         endpoint = self._build_endpoint(self.env, module, path, version)
+        print(endpoint)
         try:
             api_response = requests.get(
                 endpoint, params=params, headers=header, timeout=timeout)
@@ -86,17 +88,18 @@ class WorkspaceOneAPI(object):
 
     def post(
         self,
-        module,
-        path,
-        version=None,
-        params=None,
-        data=None,
-        json=None,
-        header=None,
-        timeout=30,
-    ):
+        module: str,
+        path: str,
+        version: str = None,
+        params: dict = None,
+        data: Any = None,
+        json: Any = None,
+        header: dict = None,
+        timeout: int = 30,
+    ) -> Response:
         """
-        Sends a POST request to the API. Returns the response object.
+        Sends a POST request to the API.
+        Returns the response object.
         """
         if header is None:
             header = {}
@@ -119,19 +122,55 @@ class WorkspaceOneAPI(object):
         except WorkspaceOneAPIError as api_error:
             raise api_error
 
+    def post_no_error_check(
+        self,
+        module: str,
+        path: str,
+        version: str = None,
+        params: dict = None,
+        data: Any = None,
+        json: Any = None,
+        header: dict = None,
+        timeout: int = 30,
+    ) -> Response:
+        """
+        Sends a POST request to the API.
+        Returns the response object without error checking.
+        """
+        if header is None:
+            header = {}
+        header.update(
+            self._build_header(self.username, self.password,
+                               self.apikey, header)
+        )
+        endpoint = self._build_endpoint(self.env, module, path, version)
+        try:
+            api_response = requests.post(
+                endpoint,
+                params=params,
+                data=data,
+                json=json,
+                headers=header,
+                timeout=timeout,
+            )
+            return api_response
+        except WorkspaceOneAPIError as api_error:
+            raise api_error
+
     def put(
         self,
-        module,
-        path,
-        version=None,
-        params=None,
-        data=None,
-        json=None,
-        header=None,
-        timeout=30,
-    ):
+        module: str,
+        path: str,
+        version: str = None,
+        params: dict = None,
+        data: Any = None,
+        json: Any = None,
+        header: dict = None,
+        timeout: int = 30,
+    ) -> Response:
         """
-        Sends a PUT request to the API. Returns the response object.
+        Sends a PUT request to the API.
+        Returns the response object.
         """
         if header is None:
             header = {}
@@ -156,17 +195,18 @@ class WorkspaceOneAPI(object):
 
     def patch(
         self,
-        module,
-        path,
-        version=None,
-        params=None,
-        data=None,
-        json=None,
-        header=None,
-        timeout=30,
-    ):
+        module: str,
+        path: str,
+        version: str = None,
+        params: dict = None,
+        data: Any = None,
+        json: Any = None,
+        header: dict = None,
+        timeout: int = 30,
+    ) -> Response:
         """
-        Sends a Patch request to the API. Returns the response object.
+        Sends a Patch request to the API.
+        Returns the response object.
         """
         if header is None:
             header = {}
@@ -193,17 +233,18 @@ class WorkspaceOneAPI(object):
 
     def delete(
         self,
-        module,
-        path,
-        version=None,
-        params=None,
-        data=None,
-        json=None,
-        header=None,
-        timeout=30,
-    ):
+        module: str,
+        path: str,
+        version: str = None,
+        params: dict = None,
+        data: Any = None,
+        json: Any = None,
+        header: dict = None,
+        timeout: int = 30,
+    ) -> Response:
         """
-        Sends a DELETE request to the API. Returns the response object.
+        Sends a DELETE request to the API.
+        Returns the response object.
         """
         if header is None:
             header = {}
@@ -227,7 +268,7 @@ class WorkspaceOneAPI(object):
             raise api_error
 
     @staticmethod
-    def _check_for_error(response):
+    def _check_for_error(response: Response) -> Union[list, dict, int, None]:
         """
         Checks the response for json data, then for an error, then for
         a status code
@@ -237,7 +278,7 @@ class WorkspaceOneAPI(object):
             "application/json; charset=utf-8",
         ):
             json = response.json()
-            if json.get("errorCode"):
+            if not isinstance(json, list) and json.get("errorCode"):
                 raise WorkspaceOneAPIError(json_response=json)
             else:
                 return json
@@ -245,7 +286,12 @@ class WorkspaceOneAPI(object):
             return response.status_code
 
     @staticmethod
-    def _build_endpoint(base_url, module, path=None, version=None):
+    def _build_endpoint(
+        base_url: str,
+        module: str,
+        path: str = None,
+        version: str = None
+    ) -> str:
         """
         Builds the full url endpoint for the API request
         """
@@ -265,7 +311,7 @@ class WorkspaceOneAPI(object):
         return url
 
     @staticmethod
-    def _build_header(username, password, token, header=None):
+    def _build_header(username: str, password: str, token: str, header: dict = None) -> Dict[str, str]:
         """
         Build the header with base64 login, AW API token,
         and accept a json response

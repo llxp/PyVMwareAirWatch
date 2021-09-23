@@ -2,6 +2,8 @@
 Module to manage all core functionalities for WorkspaceONE UEM Organization Groups
 """
 
+from typing import Any
+from ..client import Client
 import json
 from .system import System
 
@@ -12,46 +14,52 @@ class Groups(System):
     """
     jheader = {'Content-Type': 'application/json'}
 
-    def __init__(self, client):
+    def __init__(self, client: Client):
+        """
+        Initialize the Groups class with the Client object
+
+        :param client: Client object
+        """
         System.__init__(self, client)
 
     def search(self, **kwargs):
         """
         Returns the Groups matching the search parameters
         """
-        response = System._get(self, path='/groups/search', params=kwargs)
+        response = self._get(path='/groups/search', params=kwargs)
         return response
 
-    def get_id_from_groupid(self, groupid):
+    def get_id_from_groupid(self, groupid: int):
         """
         Returns the OG ID for a given Group ID
         """
         response = self.search(groupid=str(groupid))
         return response['LocationGroups'][0]['Id']['Value']
 
-    def get_groupid_from_id(self, groupid):
+    def get_groupid_from_id(self, groupid: int):
         """
         Returns the Group ID for a given ID
         """
-        response = System._get(self, path='/groups/{}'.format(groupid))
+        response = self._get(path='/groups/{}'.format(groupid))
         return response['GroupId']
 
-    def get_uuid_from_groupid(self, groupid):
+    def get_uuid_from_groupid(self, groupid: int):
         """
         Returns the OG UUID for a given Group ID
         """
-        response = System._get(self, path='/groups/{}'.format(groupid))
+        response = self._get(path='/groups/{}'.format(groupid))
         return response['Uuid']
 
-    def create(self, parent_id, ogdata):
+    def create(self, parent_id: int, ogdata: Any):
         """
         Creates a Group and returns the new ID
         """
-        response = System._post(self, path='/groups/{}'.format(parent_id),
-                                data=ogdata, header=self.jheader)
+        response = self._post(
+            path='/groups/{}'.format(parent_id),
+            data=ogdata, header=self.jheader)
         return response
 
-    def create_customer_og(self, groupid, name=None):
+    def create_customer_og(self, groupid: int, name: str = None):
         """
         Creates a Customer type OG, with a given Group ID and Name,
         and returns the new ID
@@ -64,7 +72,7 @@ class Groups(System):
         response = self.create(parent_id=7, ogdata=json.dumps(new_og))
         return response.get('Value')
 
-    def create_child_og(self, parent_groupid, groupid, og_type=None, name=None):
+    def create_child_og(self, parent_groupid: int, groupid: int, og_type: Any = None, name: str = None):
         """
         Creates a Child OG for a given Parent Group ID, with a given Type,
         Group ID, and Name, and returns the new ID

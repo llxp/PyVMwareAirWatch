@@ -3,12 +3,20 @@ Module to get the general system information of the accessed WorkspaceONE UEM en
 """
 
 from .system import System
+from ..client import Client
+
 
 class Info(System):
     """
     Base Info Class, inherited from the System class
     """
-    def __init__(self, client):
+
+    def __init__(self, client: Client):
+        """
+        Initialize the Info class
+
+        :param client: Client object
+        """
         System.__init__(self, client)
 
     def get_environment_info(self):
@@ -18,4 +26,4 @@ class Info(System):
         Returns:
             dict: System Information in JSON-format
         """
-        return System._get(self, path="/info")
+        return self._get(path="/info")

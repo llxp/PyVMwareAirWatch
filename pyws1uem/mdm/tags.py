@@ -2,6 +2,7 @@
 Module to manage device tags (add and remove)
 """
 
+from ..client import Client
 from .mdm import MDM
 
 
@@ -13,7 +14,12 @@ class Tags(MDM):
     such as installing profiles, apps or trigger compliance actions.
     """
 
-    def __init__(self, client):
+    def __init__(self, client: Client):
+        """
+        Initialize Tags Class
+
+        :param client: Client Object
+        """
         MDM.__init__(self, client)
 
     def add_device_tag(self, tag_id: str, device_id: str):
@@ -34,7 +40,7 @@ class Tags(MDM):
                 ]
             }
         }
-        response = MDM._post(self, path=path, json=device_to_add)
+        response = self._post(path=path, json=device_to_add)
         return response
 
     def remove_device_tag(self, tag_id: str, device_id: str):
@@ -55,7 +61,7 @@ class Tags(MDM):
                 ]
             }
         }
-        response = MDM._post(self, path=path, json=device_to_add)
+        response = self._post(path=path, json=device_to_add)
         return response
 
     def check_device_tag(self, tag_id: str, device_id: str = None, device_uuid: str = None) -> bool:
@@ -73,7 +79,7 @@ class Tags(MDM):
             [bool]: True if the tag is assigned / False if not
         """
         path = f'tags/{tag_id}/devices'
-        response = MDM._get(self, path=path)
+        response = self._get(path=path)
         for device in response['Device']:
             if (str(device['DeviceId']) == str(device_id)
                     or str(device['DeviceUuid']) == str(device_uuid)):

@@ -3,6 +3,7 @@ Module to manage core functionalities related to Users in WorkspaceONE UEM
 """
 
 from .system import System
+from ..client import Client
 
 
 class Users(System):
@@ -10,7 +11,12 @@ class Users(System):
     Class to manage user related methods/functions, inherited from the base system class
     """
 
-    def __init__(self, client):
+    def __init__(self, client: Client):
+        """
+        Initialize the Users class
+
+        :param client: Client object
+        """
         System.__init__(self, client)
 
     def search(self, **kwargs):
@@ -27,9 +33,9 @@ class Users(System):
             organizationgroupid={locationgroupid}
             role={role}
         """
-        return System._get(self, path='/users/search', params=kwargs)
+        return self._get(path='/users/search', params=kwargs)
 
-    def get_user_by_uuid(self, uuid):
+    def get_user_by_uuid(self, uuid: str):
         """
         Returns the enrollment user for a specific uuid using the v2 endpoint.
 
@@ -38,7 +44,7 @@ class Users(System):
         """
         _path = "/users/{}".format(uuid)
         _header = {'Accept': 'application/json;version=2'}
-        return System._get(self, header=_header, path=_path)
+        return self._get(header=_header, path=_path)
 
     def create_user(self, **kwargs):
         """
@@ -78,9 +84,9 @@ class Users(System):
             costCenter={110)
         """
         _header = {'Accept': 'application/json;version=2'}
-        return System._post(self, header=_header, path="/users/", json=kwargs)
+        return self._post(header=_header, path="/users/", json=kwargs)
 
-    def update_user_by_uuid(self, uuid: str=None, **kwargs):
+    def update_user_by_uuid(self, uuid: str = None, **kwargs):
         """
         Update the enrollment user with attributes using the v2 endpoint.
 
@@ -110,9 +116,9 @@ class Users(System):
         """
         _path = "/users/{}".format(uuid)
         _header = {'Accept': 'application/json;version=2'}
-        return System._put(self, path=_path, header=_header, json=kwargs)
+        return self._put(path=_path, header=_header, json=kwargs)
 
-    def delete_user_by_uuid(self, uuid):
+    def delete_user_by_uuid(self, uuid: str):
         """
         Delete the enrollment user by enrollment user uuid with the v2 endpoint.
 
@@ -121,9 +127,9 @@ class Users(System):
         """
         _path = '/users/{}'.format(uuid)
         _header = {'Accept': 'application/json;version=2'}
-        return System._delete(self, header=_header, path=_path)
+        return self._delete(header=_header, path=_path)
 
-    def delete_user_by_id(self, user_id):
+    def delete_user_by_id(self, user_id: str):
         """
         Delete the enrollment user by enrollment user id
 
@@ -131,9 +137,9 @@ class Users(System):
         :return: API response
         """
         path = '/users/{}/delete'.format(user_id)
-        return System._delete(self, path=path)
+        return self._delete(path=path)
 
-    def create_device_registration_to_user(self, user_id, register_device_details):
+    def create_device_registration_to_user(self, user_id: str, register_device_details: dict):
         """
         Register a device for a specific user
 
@@ -145,5 +151,5 @@ class Users(System):
             API response (dict)
         """
         path = '/users/{}/registerdevice'.format(user_id)
-        response = System._post(self, path=path, data=register_device_details)
+        response = self._post(path=path, data=register_device_details)
         return response

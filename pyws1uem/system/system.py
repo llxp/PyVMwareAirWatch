@@ -4,7 +4,12 @@ This module sets basic parameters that are needed to
 correctly connect to /system API Endpoints
 """
 
-class System(object):
+from ..rest import Rest
+from typing import Any
+from ..client import Client
+
+
+class System(Rest):
     """
     Base System class
 
@@ -18,51 +23,11 @@ class System(object):
     - Extract particular values from the devices and return it to Workspace ONE UEM.
         These attributes can then be associated with other rules to further assign to the devices.
     """
-    def __init__(self, client):
-        self.client = client
 
-    def _get(self, module='system', path=None,
-             version=None, params=None, header=None):
+    def __init__(self, client: Client):
         """
-        GET requests for base system endpoints
-        """
-        return self.client.get(module=module, path=path,
-                               version=version, params=params, header=header)
+        Initialize the System class
 
-    def _post(self, module='system', path=None,
-              version=None, params=None, data=None, json=None, header=None):
+        :param client: Client
         """
-        POST requests for base system endpoints
-        """
-        return self.client.post(module=module, path=path, version=version,
-                                params=params, data=data,
-                                json=json, header=header)
-
-    def _post_no_error_check(self, module='system', path=None,
-                             version=None, params=None, data=None,
-                             json=None, header=None):
-        """
-        POST requests with no error check when none json is returned
-        """
-        return self.client.post_no_error_check(module=module, path=path,
-                                               version=version, params=params,
-                                               data=data,
-                                               json=json, header=header)
-
-    def _put(self, module='system', path=None,
-             version=None, params=None, data=None, json=None, header=None):
-        """
-        PUT requests for base system endpoints
-        """
-        return self.client.put(module=module, path=path, version=version,
-                               params=params, data=data,
-                               json=json, header=header)
-
-    def _delete(self, module="system", path=None,
-                version=None, params=None, header=None):
-        """
-        DELETE requests for base system endpoints
-        """
-        return self.client.delete(
-            module=module, path=path, version=version, params=params, header=header
-        )
+        Rest.__init__(self, client=client, module='system')
